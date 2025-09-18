@@ -8,7 +8,9 @@ use App\Http\Controllers\Admin\IngredientController as AdminIngredientController
 use App\Http\Controllers\Admin\InventoryTransactionController as AdminInventoryTransactionController;
 use App\Http\Controllers\Admin\RecipeItemController as AdminRecipeItemController;
 use App\Http\Controllers\Admin\MenuItemController as AdminMenuItemController;
+
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\ImportController as AdminImportController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Shop\CartController;
 use App\Http\Controllers\Shop\OrderController;
@@ -108,8 +110,26 @@ Route::prefix('admin')->middleware(['auth', \App\Http\Middleware\AdminMiddleware
     Route::get('/ingredients',[AdminIngredientController::class,'index'])->name('ingredients.index');
     Route::get('/ingredients/create',[AdminIngredientController::class,'create'])->name('ingredients.create');
     Route::post('/ingredients/store',[AdminIngredientController::class,'store'])->name('ingredients.store');
+    Route::get('/ingredients/{ingredient}/edit', [AdminIngredientController::class, 'edit'])->name('ingredients.edit');
+    Route::put('/ingredients/{ingredient}', [AdminIngredientController::class, 'update'])->name('ingredients.update');
+    Route::delete('/ingredients/{ingredient}', [AdminIngredientController::class, 'destroy'])->name('ingredients.destroy');
     // Route::get('/recipe-item',[AdminRecipeItemController::class,'index'])->name('.index');
     // Route::get('/inventory-transaction',[AdminInventoryTransactionController::class,'index'])->name('ingredients.index');
+
+    // Quản lý nhập hàng
+    Route::get('/import', [AdminImportController::class, 'index'])->name('import.index');
+    Route::get('/import/create', [AdminImportController::class, 'create'])->name('import.create'); // Hiển thị form nhập hàng
+    Route::post('/import', [AdminImportController::class, 'store'])->name('import.store'); // Xử lý lưu phiếu nhập
+    Route::get('/import/{id}', [AdminImportController::class, 'show'])->name('import.show');
+    Route::delete('/import/{id}', [AdminImportController::class, 'destroy'])->name('import.destroy');
+
+    //Quản lý công thức(recipe)
+    Route::get('/recipes', [AdminRecipeItemController::class, 'index'])->name('recipes.index');
+    Route::get('/recipes/{id}', [AdminRecipeItemController::class, 'edit'])->name('recipes.edit');
+    Route::put('/recipes/{id}', [AdminRecipeItemController::class, 'update'])->name('recipes.update');
+
+    // Quản lý hao hụt 
+    Route::get('/inventory', [AdminInventoryTransactionController::class, 'index'])->name('inventory.index');
     // Quản lý người dùng
     Route::resource('users', UserController::class);
 });

@@ -151,12 +151,12 @@
 
                             <div class="flex justify-between py-2 text-sm">
                                 <span class="font-medium">Phí vận chuyển:</span>
-                                <span>{{ number_format($order->shipping_fee, 0, ',', '.') }}đ</span>
+                                <span>{{ number_format($order->shipping_fee+30000, 0, ',', '.') }}đ</span>
                             </div>
 
                             <div class="flex justify-between py-2 text-lg font-bold">
                                 <span>Tổng cộng:</span>
-                                <span>{{ number_format($order->total, 0, ',', '.') }}đ</span>
+                                <span>{{ number_format($order->total+30000, 0, ',', '.') }}đ</span>
                             </div>
                         </div>
                     </div>

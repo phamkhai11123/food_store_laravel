@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+
 class Ingredients extends Model
 {
    use HasFactory;
@@ -23,6 +24,10 @@ class Ingredients extends Model
 
     public function recipeItems() {
         return $this->hasMany(RecipeItem::class);
+    }
+    public function importDetails()
+    {
+        return $this->hasMany(IngredientImportDetail::class);
     }
 
 }

@@ -31,7 +31,7 @@ class DashboardController extends Controller
         $totalOrders = Order::count();
 
         // Tổng doanh thu
-        $totalRevenue = Order::where('status', 'completed')->sum('total');
+        $totalRevenue = Order::where('status', 'completed')->sum('profit');
 
         // Đơn hàng mới trong 7 ngày qua
         $newOrders = Order::where('created_at', '>=', Carbon::now()->subDays(7))->count();

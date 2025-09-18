@@ -21,8 +21,8 @@ class CartController extends Controller
         });
 
         // Calculate shipping fee (30,000 VND if subtotal is less than 500,000 VND, otherwise free)
-        $shippingFee = $subtotal > 0 && $subtotal < 500000 ? 30000 : 0;
-
+        // $shippingFee = $subtotal > 0 && $subtotal < 500000 ? 30000 : 0;
+        $shippingFee  = 0;  
         // Calculate total
         $total = $subtotal + $shippingFee;
 

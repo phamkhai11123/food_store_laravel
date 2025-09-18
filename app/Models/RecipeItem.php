@@ -19,4 +19,11 @@ class RecipeItem extends Model
 
     public function menuItem() { return $this->belongsTo(MenuItems::class); }
     public function ingredient() { return $this->belongsTo(Ingredients::class); }
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'menu_item_id');
+    }
+
+
+
 }

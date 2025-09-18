@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\InventoryTransaction;
+use App\Services\OrderProfitService;    
 use App\Models\Order;
 use App\Models\OrderHistory;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class OrdersController extends Controller
 {
@@ -73,7 +76,8 @@ class OrdersController extends Controller
             'processing' => Order::where('status', 'processing')->count(),
             'completed' => Order::where('status', 'completed')->count(),
             'cancelled' => Order::where('status', 'cancelled')->count(),
-            'total_amount' => Order::where('status', '!=', 'cancelled')->sum('total'),
+            'total_amount' => Order::where('status', '!=', 'cancelled')->sum('profit'),
+            'ingredient_cost_per_order'=>Order::where('status', '!=', 'cancelled')->sum('ingredient_cost'),
         ];
 
         // Sort orders
@@ -81,7 +85,7 @@ class OrdersController extends Controller
         $sortDirection = $request->direction ?? 'desc';
         $query->orderBy($sortField, $sortDirection);
 
-        $orders = $query->paginate(20)->withQueryString();
+        $orders = $query->paginate(5)->withQueryString();
 
         return view('admin.orders.index', [
             'orders' => $orders,
@@ -232,6 +236,18 @@ class OrdersController extends Controller
             $order->status = $validated['status'];
             $order->save();
 
+            if ($order->status === 'completed' && $order->payment_status === '1') {
+                $profitService = new \App\Services\OrderProfitService;
+                // Eager load các quan hệ cần thiết để tính chi phí nguyên liệu
+                $order->loadMissing('items.product.recipeItems.ingredient');
+
+                // Tính toán và lưu chi phí nguyên liệu + lợi nhuận
+                $order->ingredient_cost = $profitService->calculateIngredientCost($order);
+                $order->profit = $profitService->calculateProfit($order);
+                $order->save();
+            }
+
+
             // Log the status change
             $oldStatusText = $this->translateOrderStatus($oldStatus);
             $newStatusText = $this->translateOrderStatus($validated['status']);
@@ -257,6 +273,8 @@ class OrdersController extends Controller
         }
     }
 
+
+   
     /**
      * Mark the order as paid.
      */
@@ -370,6 +388,43 @@ class OrdersController extends Controller
 
                     Order::whereIn('id', $orderIds)->update(['status' => 'processing']);
 
+                    $processingOrders = Order::whereIn('id', $orderIds)->where('status', 'processing')->get();
+
+                    try {
+                        foreach ($processingOrders as $order) {
+                            foreach ($order->items as $item) {
+                                $product = $item->product;
+                                $product->loadMissing('recipeItems.ingredient');
+
+                                foreach ($product->recipeItems as $recipe) {
+                                    $ingredient = $recipe->ingredient;
+
+                                    if (!$ingredient) {
+                                        Log::warning("Thiếu nguyên liệu cho recipe ID {$recipe->id}");
+                                        continue;
+                                    }
+
+                                    $usedQty = $recipe->quantity_per_portion_base * $item->quantity;
+
+                                    $ingredient->track_stock -= $usedQty;
+                                    $ingredient->save();
+
+                                    InventoryTransaction::create([
+                                        'ingredient_id' => $ingredient->id,
+                                        'type' => 'export',
+                                        'quantity_base' => $usedQty,
+                                        'performed_at' => now(),
+                                        'note' => "Xuất kho khi xử lý đơn hàng #{$order->order_number}",
+                                        'ref_id' => $order->id,
+                                    ]);
+                                    Log::info("→ Đã ghi nhận xuất kho '{$ingredient->name}' số lượng {$usedQty} cho đơn hàng #{$order->id}.");
+                                }
+                            }
+                        }
+                    } catch (\Throwable $e) {
+                        Log::error("Lỗi khi trừ kho: " . $e->getMessage());
+                    }
+
                     // Log history for each order
                     foreach ($orderIds as $orderId) {
                         if (isset($orders[$orderId])) {
@@ -393,6 +448,21 @@ class OrdersController extends Controller
                     $orders = Order::whereIn('id', $orderIds)->get(['id', 'status'])->keyBy('id');
 
                     Order::whereIn('id', $orderIds)->update(['status' => 'completed']);
+
+                    $completedOrders = Order::whereIn('id', $orderIds)->get();
+
+                    $profitService = new OrderProfitService;
+
+                    foreach ($completedOrders as $order) {
+                        // Load đầy đủ quan hệ để tính chi phí
+                        $order->loadMissing('items.product.recipeItems.ingredient');
+
+                        // Tính toán chi phí nguyên liệu và lợi nhuận
+                        $order->ingredient_cost = $profitService->calculateIngredientCost($order);
+                        $order->profit = $profitService->calculateProfit($order);
+                        $order->save(); // Ghi vào DB
+                       
+                    }
 
                     // Log history for each order
                     foreach ($orderIds as $orderId) {

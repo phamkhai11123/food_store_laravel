@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use App\Models\RecipeItem;
 
 class Product extends Model
 {
@@ -30,6 +31,12 @@ class Product extends Model
         static::addGlobalScope('active', function (Builder $builder) {
             $builder->where('is_active', true);
         });
+    }
+    
+
+    public function recipeItems()
+    {
+        return $this->hasMany(RecipeItem::class, 'menu_item_id');
     }
 
     /**

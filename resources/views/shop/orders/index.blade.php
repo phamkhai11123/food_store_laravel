@@ -36,7 +36,7 @@
                                         <div class="text-sm text-gray-900">{{ $order->created_at->format('d/m/Y H:i') }}</div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm text-gray-900">{{ number_format($order->total, 0, ',', '.') }}đ</div>
+                                        <div class="text-sm text-gray-900">{{ number_format($order->total+30000, 0, ',', '.') }}đ</div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                     @if($order->status == 'pending')

@@ -1,63 +1,70 @@
-<x-layouts.admin title="Cập nhật đơn hàng">
+<x-layouts.admin title="Thêm nhiều nguyên liệu">
     <div class="max-w-7xl mx-auto py-10 px-6">
-        <h2 class="text-3xl font-bold text-gray-800 mb-8">🧪 Thêm nguyên liệu mới</h2>
+        <h2 class="text-3xl font-bold text-gray-800 mb-8">🧪 Thêm nguyên liệu</h2>
 
-        <form action="{{ route('admin.ingredients.store') }}" method="POST" class="bg-white p-8 rounded-lg shadow-lg space-y-6">
+        <form action="{{ route('admin.ingredients.store') }}" method="POST" class="bg-white p-6 rounded-lg shadow-lg space-y-6">
             @csrf
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label for="sku" class="block text-sm font-medium text-gray-700">Mã SKU</label>
-                    <input type="text" name="sku" id="sku" value="{{ old('sku') }}"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        required>
+            <div class="overflow-x-auto">
+                <div id="ingredient-rows" class="space-y-6">
+                    <div class="flex gap-2 ingredient-row">
+                        <input type="text" name="ingredients[0][sku]" placeholder="SKU" class="w-1/6 form-input text-sm h-12" required>
+                        <input type="text" name="ingredients[0][name]" placeholder="Tên" class="w-1/6 form-input text-sm h-12" required>
+                        <select name="ingredients[0][base_unit]" class="w-1/6 form-select text-sm h-12">
+                            <option value="g">Gram</option>
+                            <option value="ml">Mililit</option>
+                            <option value="pc">Cái</option>
+                        </select>
+                        <input type="number" name="ingredients[0][track_stock]" placeholder="Tồn kho" class="w-1/6 form-input h-12 text-sm">
+                        <input type="number" step="0.01" name="ingredients[0][suggested_unit_cost]" placeholder="Giá vốn" class="w-1/6 form-input text-sm">
+                        <select name="ingredients[0][is_active]" class="w-1/6 form-select text-sm">
+                            <option value="1">Hoạt động</option>
+                            <option value="0">Ngừng</option>
+                        </select>
+                    </div>
                 </div>
+            </div>
 
-                <div>
-                    <label for="name" class="block text-sm font-medium text-gray-700">Tên nguyên liệu</label>
-                    <input type="text" name="name" id="name" value="{{ old('name') }}"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        required>
-                </div>
-
-                <div>
-                    <label for="base_unit" class="block text-sm font-medium text-gray-700">Đơn vị cơ bản</label>
-                    <select name="base_unit" id="base_unit"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                        <option value="g" {{ old('base_unit') == 'g' ? 'selected' : '' }}>Gram</option>
-                        <option value="ml" {{ old('base_unit') == 'ml' ? 'selected' : '' }}>Mililit</option>
-                        <option value="pc" {{ old('base_unit') == 'pc' ? 'selected' : '' }}>Cái</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label for="track_stock" class="block text-sm font-medium text-gray-700">Số lượng tồn kho</label>
-                    <input type="number" name="track_stock" id="track_stock" value="{{ old('track_stock') }}"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                </div>
-
-                <div>
-                    <label for="suggested_unit_cost" class="block text-sm font-medium text-gray-700">Giá vốn đề xuất</label>
-                    <input type="number" step="0.01" name="suggested_unit_cost" id="suggested_unit_cost" value="{{ old('suggested_unit_cost') }}"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                </div>
-
-                <div>
-                    <label for="is_active" class="block text-sm font-medium text-gray-700">Trạng thái</label>
-                    <select name="is_active" id="is_active"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                        <option value="1" {{ old('is_active') == '1' ? 'selected' : '' }}>Hoạt động</option>
-                        <option value="0" {{ old('is_active') == '0' ? 'selected' : '' }}>Ngừng hoạt động</option>
-                    </select>
-                </div>
+            <div class="pt-4">
+                <button type="button" id="add-row"
+                    class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
+                    ➕ Thêm nguyên liệu
+                </button>
             </div>
 
             <div class="pt-6">
                 <button type="submit"
-                    class="inline-flex items-center px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-dark font-semibold rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    💾 Lưu nguyên liệu
+                    class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 btn btn-primary font-semibold rounded-md shadow-sm">
+                    💾 Lưu tất cả
                 </button>
             </div>
         </form>
     </div>
+
+    <script>
+        let index = 1;
+        document.getElementById('add-row').addEventListener('click', function () {
+            const container = document.getElementById('ingredient-rows');
+            const newRow = document.createElement('div');
+            newRow.className = 'flex gap-2 ingredient-row';
+            newRow.innerHTML = `
+                <input type="text" name="ingredients[${index}][sku]" placeholder="SKU" class="w-1/6 h-12 form-input text-sm" required>
+                <input type="text" name="ingredients[${index}][name]" placeholder="Tên" class="w-1/6 h-12 form-input text-sm" required>
+                <select name="ingredients[${index}][base_unit]" class="w-1/6 h-12 form-select text-sm">
+                    <option value="g">Gram</option>
+                    <option value="ml">Mililit</option>
+                    <option value="pc">Cái</option>
+                </select>
+                <input type="number" name="ingredients[${index}][track_stock]" placeholder="Tồn kho" class="w-1/6 form-input text-sm">
+                <input type="number" step="0.01" name="ingredients[${index}][suggested_unit_cost]" placeholder="Giá vốn" class="w-1/6 form-input text-sm">
+                <select name="ingredients[${index}][is_active]" class="w-1/6 form-select text-sm">
+                    <option value="1">Hoạt động</option>
+                    <option value="0">Ngừng</option>
+                </select>
+                  <hr class="my-2 border-dark">
+            `;
+            container.appendChild(newRow);
+            index++;
+        });
+    </script>
 </x-layouts.admin>

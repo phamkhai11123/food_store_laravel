@@ -1,9 +1,38 @@
 <x-layouts.admin title="Quản lý đơn hàng">
-    <div class="p-6">
+    <div class="p-0 w-100">
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-2xl font-bold">Quản lý đơn hàng</h1>
         </div>
-
+        <div class="flex flex-wrap gap-4 mb-6">
+            <div class="flex-1 min-w-[180px] bg-white p-4 rounded shadow text-center">
+                <p class="text-sm text-gray-500">📦 Tổng đơn</p>
+                <p class="text-2xl font-bold text-indigo-600">{{ $statistics['all'] }}</p>
+            </div>
+            <div class="flex-1 min-w-[180px] bg-white p-4 rounded shadow text-center">
+                <p class="text-sm text-gray-500">⏳ Đang xử lý</p>
+                <p class="text-2xl font-bold text-yellow-500">{{ $statistics['pending'] }}</p>
+            </div>
+            <div class="flex-1 min-w-[180px] bg-white p-4 rounded shadow text-center">
+                <p class="text-sm text-gray-500">🛠 Đang chuẩn bị</p>
+                <p class="text-2xl font-bold text-blue-500">{{ $statistics['processing'] }}</p>
+            </div>
+            <div class="flex-1 min-w-[180px] bg-white p-4 rounded shadow text-center">
+                <p class="text-sm text-gray-500">✅ Hoàn tất</p>
+                <p class="text-2xl font-bold text-green-600">{{ $statistics['completed'] }}</p>
+            </div>
+            <div class="flex-1 min-w-[180px] bg-white p-4 rounded shadow text-center">
+                <p class="text-sm text-gray-500">❌ Đã hủy</p>
+                <p class="text-2xl font-bold text-red-500">{{ $statistics['cancelled'] }}</p>
+            </div>
+            <div class="flex-1 min-w-[180px] bg-white p-4 rounded shadow text-center">
+                <p class="text-sm text-gray-500">💰 Chí phí nguyên liệu </p>
+                <p class="text-2xl font-bold text-emerald-600">{{ number_format($statistics['ingredient_cost_per_order']) }}₫</p>
+            </div>
+            <div class="flex-1 min-w-[180px] bg-white p-4 rounded shadow text-center">
+                <p class="text-sm text-gray-500">💰 Doanh thu</p>
+                <p class="text-2xl font-bold text-emerald-600">{{ number_format($statistics['total_amount']) }}₫</p>
+            </div>
+        </div>
         <div class="bg-white rounded-lg shadow-md overflow-hidden">
             <div class="p-4 border-b border-gray-200 flex flex-col md:flex-row md:justify-between md:items-center space-y-4 md:space-y-0">
                 <!-- Search and Filters -->
@@ -119,36 +148,42 @@
             @endif
 
             <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
+                <table class="min-w-100 divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 <div class="flex items-center">
-                                    <input type="checkbox" id="selectAll" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                    <input type="checkbox" id="selectAll" class="h-2 w-2 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
                                 </div>
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Mã đơn hàng
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Khách hàng
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Tổng tiền
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Phí nguyên liệu
+                            </th>
+                             <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Lợi nhuận
+                            </th>
+                            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Phương thức TT
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Trạng thái TT
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Trạng thái
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Ngày đặt
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Thao tác
                             </th>
                         </tr>
@@ -156,25 +191,31 @@
                     <tbody class="bg-white divide-y divide-gray-200">
                         @foreach($orders as $order)
                             <tr>
-                                <td class="px-6 py-4 whitespace-nowrap">
+                                <td class="px-3 py-3 whitespace-nowrap">
                                     <div class="flex items-center">
-                                        <input type="checkbox" class="order-checkbox h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" value="{{ $order->id }}">
+                                        <input type="checkbox" class="order-checkbox h-2 w-2 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" value="{{ $order->id }}">
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
+                                <td class="px-3 py-3 whitespace-nowrap">
                                     <a href="{{ route('admin.orders.show', $order) }}" class="text-blue-600 hover:text-blue-900 font-medium">
                                         #{{ $order->order_number }}
                                     </a>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
+                                <td class="px-3 py-3 whitespace-nowrap">
                                     <div class="text-sm font-medium text-gray-900">{{ $order->name }}</div>
                                     <div class="text-sm text-gray-500">{{ $order->email }}</div>
                                     <div class="text-sm text-gray-500">{{ $order->phone }}</div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
+                                <td class="px-3 py-3 whitespace-nowrap">
                                     <div class="text-sm font-medium text-gray-900">{{ number_format($order->total) }}đ</div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
+                                <td class="px-3 py-3 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900">{{ number_format($order->ingredient_cost) }}đ</div>
+                                </td>
+                                <td class="px-3 py-3 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900">{{ number_format($order->profit) }}đ</div>
+                                </td>
+                                <td class="px-3 py-3 whitespace-nowrap">
                                     <div class="text-sm text-gray-900">
                                         @if($order->payment_method == 'cod')
                                             <span class="flex items-center">
@@ -191,7 +232,7 @@
                                         @endif
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
+                                <td class="px-3 py-3 whitespace-nowrap">
                                     @if($order->payment_status)
                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                                             Đã thanh toán
@@ -202,7 +243,7 @@
                                         </span>
                                     @endif
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
+                                <td class="px-3 py-3 whitespace-nowrap">
                                     @if($order->status == 'pending')
                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
                                             Đang xử lý
@@ -221,11 +262,11 @@
                                         </span>
                                     @endif
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
+                                <td class="px-3 py-3 whitespace-nowrap">
                                     <div class="text-sm text-gray-900">{{ $order->created_at->format('d/m/Y') }}</div>
                                     <div class="text-sm text-gray-500">{{ $order->created_at->format('H:i') }}</div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <td class="px-3 py-3 whitespace-nowrap text-sm font-medium">
                                     <a href="{{ route('admin.orders.show', $order) }}" class="text-blue-600 hover:text-blue-900 mr-3" title="Xem chi tiết">
                                         <i class="fas fa-eye"></i>
                                     </a>
@@ -248,7 +289,7 @@
                 </div>
             @endif
 
-            <div class="px-6 py-4 border-t border-gray-200">
+            <div class="px-3 py-3 border-t border-gray-200">
                 <div class="flex flex-col md:flex-row justify-between items-center">
                     <div class="mb-4 md:mb-0">
                         <div class="flex items-center">
@@ -272,7 +313,6 @@
                             </button>
                         </div>
                     </div>
-
                     <div>
                         {{ $orders->withQueryString()->links() }}
                     </div>

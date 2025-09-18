@@ -58,8 +58,9 @@ class OrderController extends Controller
         });
 
         // Định nghĩa phí vận chuyển
-        $shippingFee = 30000; // Phí vận chuyển cố định 30,000đ
-
+        // $shippingFee = 30000; // Phí vận chuyển cố định 30,000đ
+        // $shippingFee = $subtotal > 0 && $subtotal < 500000 ? 30000 : 0;
+        $shippingFee = 0;
         // Tính tổng tiền
         $total = $subtotal + $shippingFee;
 
@@ -88,7 +89,7 @@ class OrderController extends Controller
         });
 
         // Định nghĩa phí vận chuyển
-        $shippingFee = 30000; // Phí vận chuyển cố định 30,000đ
+        $shippingFee = 0; // Phí vận chuyển cố định 30,000đ
 
         // Tính tổng tiền
         $total = $subtotal + $shippingFee;

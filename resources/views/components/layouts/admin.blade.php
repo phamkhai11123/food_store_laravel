@@ -65,6 +65,21 @@
                         <i class="fas fa-boxes mr-2"></i> Quản lý nguyên liệu
                     </a>
                 </li>
+                 <li>
+                    <a href="{{ route('admin.import.index') }}" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 {{ request()->routeIs('admin.import.*') ? 'bg-blue-600' : '' }}">
+                        <i class="fas fa-truck mr-2"></i> Quản lý nhập hàng
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('admin.recipes.index') }}" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 {{ request()->routeIs('admin.recipes.*') ? 'bg-blue-600' : '' }}">
+                        <i class="fas fa-receipt mr-2"></i> Quản lý công thức
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('admin.inventory.index') }}" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 {{ request()->routeIs('admin.inventory.*') ? 'bg-blue-600' : '' }}">
+                        <i class="fas fa-store mr-2"></i> Quản lý kho
+                    </a>
+                </li>
 
                 <li class="border-t border-gray-700 my-2 pt-2">
                     <a href="{{ route('home') }}" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">

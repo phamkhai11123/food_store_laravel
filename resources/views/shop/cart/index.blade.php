@@ -116,13 +116,13 @@
 
                             <div class="flex justify-between">
                                 <span class="text-gray-600">Phí vận chuyển</span>
-                                <span class="font-medium">{{ number_format($shippingFee) }}đ</span>
+                                <span class="font-medium">{{ number_format($shippingFee+30000) }}đ</span>
                             </div>
 
                             <div class="border-t border-gray-200 pt-4 mt-4">
                                 <div class="flex justify-between font-bold text-lg">
                                     <span>Tổng cộng</span>
-                                    <span class="text-red-600">{{ number_format($total) }}đ</span>
+                                    <span class="text-red-600">{{ number_format($total+30000) }}đ</span>
                                 </div>
                             </div>
 

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\InventoryTransaction;
 
 class Order extends Model
 {
@@ -24,6 +25,8 @@ class Order extends Model
         'shipping_fee',
         'total',
         'note',
+        'ingredient_cost',
+        'profit',
     ];
 
     /**
@@ -82,4 +85,5 @@ class Order extends Model
     {
         return $this->status === 'completed';
     }
+
 }
