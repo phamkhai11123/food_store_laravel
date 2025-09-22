@@ -189,10 +189,10 @@
                                         <a href="{{ route('admin.users.show', $user) }}" class="text-blue-600 hover:text-blue-900">
                                             <i class="fas fa-eye"></i>
                                         </a>
-                                        <a href="{{ route('admin.users.edit', $user) }}" class="text-yellow-600 hover:text-yellow-900">
+                                        {{-- <a href="{{ route('admin.users.edit', $user) }}" class="text-yellow-600 hover:text-yellow-900">
                                             <i class="fas fa-edit"></i>
-                                        </a>
-                                        @if(\Illuminate\Support\Facades\Auth::id() != $user->id)
+                                        </a> --}}
+                                        {{-- @if(\Illuminate\Support\Facades\Auth::id() != $user->id)
                                             <form action="{{ route('admin.users.destroy', $user) }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa người dùng này?');">
                                                 @csrf
                                                 @method('DELETE')
@@ -200,7 +200,7 @@
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </form>
-                                        @endif
+                                        @endif --}}
                                     </div>
                                 </td>
                             </tr>

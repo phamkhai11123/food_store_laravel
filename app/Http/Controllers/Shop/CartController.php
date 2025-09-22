@@ -15,9 +15,10 @@ class CartController extends Controller
      */
     public function index()
     {
-        $cartItems = Cart::where('user_id', Auth::id())->with('product')->get();
+        $cartItems = Cart::where('user_id', Auth::id())
+            ->with('product.promotions')->get();
         $subtotal = $cartItems->sum(function ($item) {
-            return $item->quantity * $item->product->price;
+            return $item->quantity * $item->product->getDiscountedPrice();
         });
 
         // Calculate shipping fee (30,000 VND if subtotal is less than 500,000 VND, otherwise free)

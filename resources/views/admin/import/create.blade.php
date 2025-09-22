@@ -7,7 +7,7 @@
 
             <div class="mb-6">
                 <label for="supplier" class="block text-sm font-medium text-gray-700 mb-1">Nhà cung cấp</label>
-                <select name="supplier" id="supplier" class="w-full px-3 py-2 border rounded">
+                <select name="supplier" id="supplier" class="w-full px-3 py-2 border rounded" required>
                     <option value="">-- Chọn nhà cung cấp --</option>
                     @foreach($suppliers as $supplier)
                         <option value="{{ $supplier }}">{{ $supplier }}</option>
@@ -17,15 +17,15 @@
 
             <div id="import-lines" class="space-y-4">
                 <div class="import-line flex flex-wrap items-center gap-4">
-                    <select name="ingredients[0][id]" class="flex-1 min-w-[200px] px-3 py-2 border rounded">
+                    <select name="ingredients[0][id]" class="flex-1 min-w-[200px] px-3 py-2 border rounded" required>
                         <option value="">-- Chọn nguyên liệu --</option>
                         @foreach($ingredients as $ingredient)
                             <option value="{{ $ingredient->id }}">{{ $ingredient->name }}</option>
                         @endforeach
                     </select>
 
-                    <input type="number" name="ingredients[0][quantity]" class="flex-1 min-w-[150px] px-3 py-2 border rounded" placeholder="Số lượng">
-                    <input type="number" step="0.01" name="ingredients[0][unit_price]" class="flex-1 min-w-[150px] px-3 py-2 border rounded" placeholder="Giá nhập">
+                    <input type="number" required name="ingredients[0][quantity]" class="flex-1 min-w-[150px] px-3 py-2 border rounded" placeholder="Số lượng">
+                    <input type="number" required step="0.01" name="ingredients[0][unit_price]" class="flex-1 min-w-[150px] px-3 py-2 border rounded" placeholder="Giá nhập">
 
                     <button type="button" class="remove-line text-red-600 font-bold text-xl">&times;</button>
                 </div>

@@ -248,7 +248,24 @@
                     <canvas id="orderStatusChart"></canvas>
                 </div>
             </div>
+
+            <!-- Monthly Revenue Chart -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="font-bold text-lg mb-4">Doanh thu 6 tháng gần nhất</h2>
+                <div class="h-64">
+                    <canvas id="monthlyRevenueChart"></canvas>
+                </div>
+            </div>
+            <!-- Yearly Revenue Chart -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="font-bold text-lg mb-4">Doanh thu theo năm</h2>
+                <div class="h-64">
+                    <canvas id="yearlyRevenueChart"></canvas>
+                </div>
+            </div>
+
         </div>
+
     </div>
 
     @push('scripts')
@@ -273,7 +290,7 @@
                     },
                     options: {
                         responsive: true,
-                        maintainAspectRatio: false,
+                        maintainAspectRatio: true,
                         plugins: {
                             legend: {
                                 display: false
@@ -324,6 +341,75 @@
                         }
                     }
                 });
+
+                const monthlyCtx = document.getElementById('monthlyRevenueChart').getContext('2d');
+                const monthlyChart = new Chart(monthlyCtx, {
+                    type: 'line',
+                    data: {
+                        labels: {!! json_encode($monthlyRevenueChart['labels']) !!},
+                        datasets: [{
+                            label: 'Doanh thu theo tháng (VNĐ)',
+                            data: {!! json_encode($monthlyRevenueChart['data']) !!},
+                            backgroundColor: 'rgba(234, 179, 8, 0.6)', // vàng nhạt
+                            borderColor: 'rgba(202, 138, 4, 1)',       // vàng đậm
+                            borderWidth: 1,
+                            tension: 0.5,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: true }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function (value) {
+                                        return new Intl.NumberFormat('vi-VN').format(value) + 'đ';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+                const yearlyCtx = document.getElementById('yearlyRevenueChart').getContext('2d');
+                const yearlyChart = new Chart(yearlyCtx, {
+                    type: 'line',
+                    data: {
+                        labels: {!! json_encode($yearlyRevenueChart['labels']) !!},
+                        datasets: [{
+                            label: 'Doanh thu theo năm (VNĐ)',
+                            data: {!! json_encode($yearlyRevenueChart['data']) !!},
+                            borderColor: 'rgba(239, 68, 68, 1)', // đỏ
+                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: true }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function (value) {
+                                        return new Intl.NumberFormat('vi-VN').format(value) + 'đ';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+
             });
         </script>
     @endpush

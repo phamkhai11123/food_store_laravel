@@ -83,18 +83,74 @@ class DashboardController extends Controller
             ->groupBy('status')
             ->get();
 
+        // Truy vấn doanh thu theo năm (chỉ các năm có đơn)
+        $rawYearlyRevenue = Order::where('status', 'completed')
+            ->where('created_at', '>=', Carbon::now()->subYears(3)->startOfYear())
+            ->select(
+                DB::raw('YEAR(created_at) as year'),
+                DB::raw('SUM(profit) as profit')
+            )
+            ->groupBy('year')
+            ->orderBy('year')
+            ->get();
+
+        // Tạo mảng đầy đủ 3 năm gần nhất
+        $yearlyLabels = [];
+        $yearlyRevenueData = [];
+
+        for ($i = 2; $i >= 0; $i--) {
+            $year = Carbon::now()->subYears($i)->year;
+            $yearlyLabels[] = (string)$year;
+
+            $record = $rawYearlyRevenue->first(function ($item) use ($year) {
+                return (int)$item->year === (int)$year;
+            });
+
+            $yearlyRevenueData[] = $record ? (float)$record->profit : 0;
+        }
+
+        $yearlyRevenueChart = [
+            'labels' => $yearlyLabels,
+            'data' => $yearlyRevenueData
+        ];
+
+
+
+
         // Thống kê doanh thu theo tháng (6 tháng gần nhất)
         $revenueByMonth = Order::where('status', 'completed')
             ->where('created_at', '>=', Carbon::now()->subMonths(6))
             ->select(
                 DB::raw('MONTH(created_at) as month'),
                 DB::raw('YEAR(created_at) as year'),
-                DB::raw('SUM(total) as total')
+                DB::raw('SUM(profit) as profit')
             )
             ->groupBy('year', 'month')
             ->orderBy('year')
             ->orderBy('month')
             ->get();
+        
+        $monthlyLabels = [];
+        $monthlyRevenueData = [];    
+        for ($i = 5; $i >= 0; $i--) {
+            $month = Carbon::now()->subMonths($i)->month;
+            $year = Carbon::now()->subMonths($i)->year;
+            $label = $month . '/' . $year;
+            $monthlyLabels[] = $label;
+            // Tìm bản ghi tương ứng trong kết quả truy vấn
+            $record = $revenueByMonth->first(function ($item) use ($month, $year) {
+                return $item->month == $month && $item->year == $year;
+            });
+
+            $monthlyRevenueData[] = $record ? $record->profit : 0;
+        }
+
+
+        $monthlyRevenueChart = [
+            'labels' => $monthlyLabels,
+            'data' => $monthlyRevenueData
+        ];
+
 
         // Các sản phẩm bán chạy nhất
         $topProducts = DB::table('order_items')
@@ -129,7 +185,7 @@ class DashboardController extends Controller
             $date = Carbon::now()->subDays($i)->format('d/m');
             $revenue = Order::where('status', 'completed')
                 ->whereDate('created_at', Carbon::now()->subDays($i)->toDateString())
-                ->sum('total');
+                ->sum('profit');
 
             $revenueChartData['labels'][] = $date;
             $revenueChartData['data'][] = $revenue;
@@ -159,7 +215,9 @@ class DashboardController extends Controller
             'totalCustomers',
             'newProducts',
             'revenueChartData',
-            'orderStatusData'
+            'orderStatusData',
+            'monthlyRevenueChart',
+            'yearlyRevenueChart'
         ));
     }
 }

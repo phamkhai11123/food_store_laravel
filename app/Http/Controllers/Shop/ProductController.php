@@ -17,7 +17,7 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Product::query();
+        $query = Product::with('promotions')->where('is_active', true);
 
         // Lọc theo danh mục
         if ($request->has('category')) {
@@ -29,6 +29,18 @@ class ProductController extends Controller
             // Only include products from active categories
             $query->whereHas('category', function($q) {
                 $q->where('is_active', true);
+            });
+        }
+        if ($request->sale == 1) {
+            $query->whereHas('promotions', function ($q) {
+                $now = now();
+                $q->where('is_active', true)
+                ->where(function ($q2) use ($now) {
+                    $q2->whereNull('start_date')->orWhere('start_date', '<=', $now);
+                })
+                ->where(function ($q2) use ($now) {
+                    $q2->whereNull('end_date')->orWhere('end_date', '>=', $now);
+                });
             });
         }
 

@@ -33,6 +33,37 @@ class Product extends Model
         });
     }
     
+    public function promotions()
+    {
+        return $this->belongsToMany(Promotion::class, 'promotion_product');
+    }
+
+    public function getDiscountedPrice()
+    {
+        $promotion = $this->promotions
+            ->where('is_active', true)
+            ->filter(function ($promo) {
+                $now = now();
+                return (!$promo->start_date || $promo->start_date <= $now)
+                    && (!$promo->end_date || $promo->end_date >= $now);
+            })
+            ->first();
+
+        if (!$promotion) {
+            return $this->price;
+        }
+
+        switch ($promotion->type) {
+            case 'percentage':
+                return round($this->price * (1 - $promotion->value / 100), 0);
+
+            case 'fixed': // 👈 giảm số tiền cụ thể
+                return max(0, $this->price - $promotion->value);
+
+            default:
+                return $this->price;
+        }
+    }
 
     public function recipeItems()
     {

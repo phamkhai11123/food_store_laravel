@@ -8,6 +8,8 @@ use App\Http\Controllers\Admin\IngredientController as AdminIngredientController
 use App\Http\Controllers\Admin\InventoryTransactionController as AdminInventoryTransactionController;
 use App\Http\Controllers\Admin\RecipeItemController as AdminRecipeItemController;
 use App\Http\Controllers\Admin\MenuItemController as AdminMenuItemController;
+use App\Http\Controllers\Admin\AdminReservationController;
+use App\Http\Controllers\Admin\PromotionController as AdminPromotionController;
 
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ImportController as AdminImportController;
@@ -16,6 +18,7 @@ use App\Http\Controllers\Shop\CartController;
 use App\Http\Controllers\Shop\OrderController;
 use App\Http\Controllers\Shop\ProductController;
 use App\Http\Controllers\Shop\ReviewController;
+use App\Http\Controllers\Shop\ReservationController;
 use App\Http\Controllers\User\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -29,6 +32,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [ProductController::class, 'index'])->name('home');
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
+Route::get('/booking/create', [ReservationController::class, 'create'])->name('reservation.create');
+Route::post('/booking', [ReservationController::class, 'store'])->name('reservation.store');
 
 // Authentication
 Route::middleware('guest')->group(function () {
@@ -38,10 +43,12 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::get('/forgot-password', [AuthController::class, 'showForgotPasswordForm'])->name('password.request');
     Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->name('password.email');
+    
 });
 
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+                
 
     // Thông tin cá nhân
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
@@ -93,6 +100,10 @@ Route::prefix('admin')->middleware(['auth', \App\Http\Middleware\AdminMiddleware
 
     Route::post('/products/bulk-action', [AdminProductController::class, 'bulkAction'])->name('products.bulk-action');
     Route::post('/products/delete-gallery-image', [AdminProductController::class, 'deleteGalleryImage'])->name('products.delete-gallery-image');
+    Route::post('/products/apply-promotion', [AdminProductController::class, 'applyPromotion'])
+    ->name('products.apply-promotion');
+    Route::post('/products/remove-promotion', [AdminProductController::class, 'removePromotion'])
+    ->name('products.remove-promotion');
 
     // Quản lý đơn hàng
     Route::get('/orders', [AdminOrdersController::class, 'index'])->name('orders.index');
@@ -132,4 +143,13 @@ Route::prefix('admin')->middleware(['auth', \App\Http\Middleware\AdminMiddleware
     Route::get('/inventory', [AdminInventoryTransactionController::class, 'index'])->name('inventory.index');
     // Quản lý người dùng
     Route::resource('users', UserController::class);
+    // quan ly dat ban
+    Route::get('/reservations', [AdminReservationController::class, 'index'])->name('reservations.index');
+    Route::post('/reservations/{id}/update-status', [AdminReservationController::class, 'updateStatus'])->name('reservations.updateStatus');
+    // quan ly khuyen mai
+    Route::get('/promotions', [AdminPromotionController::class, 'index'])->name('promotions.index');
+    Route::get('/promotions/create', [AdminPromotionController::class, 'create'])->name('promotions.create');
+    Route::post('/promotions', [AdminPromotionController::class, 'store'])->name('promotions.store');
+    Route::get('/promotions/{promotion}/edit', [AdminPromotionController::class, 'edit'])->name('promotions.edit');
+    Route::put('/promotions/{promotion}', [AdminPromotionController::class, 'update'])->name('promotions.update');
 });

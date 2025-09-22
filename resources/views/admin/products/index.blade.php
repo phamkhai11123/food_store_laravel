@@ -65,7 +65,7 @@
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 <div class="flex items-center">
                                     <input type="checkbox" id="selectAll" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
                                 </div>
@@ -79,11 +79,17 @@
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Giá
                             </th>
+                            <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Giá sau khuyến mãi
+                            </th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Đã bán
                             </th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Trạng thái
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Khuyến mãi
                             </th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Ngày tạo
@@ -96,12 +102,12 @@
                     <tbody class="bg-white divide-y divide-gray-200">
                         @foreach($products as $product)
                             <tr>
-                                <td class="px-6 py-4 whitespace-nowrap">
+                                <td class="px-4 py-3 whitespace-nowrap">
                                     <div class="flex items-center">
                                         <input type="checkbox" class="product-checkbox h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" value="{{ $product->id }}">
                                     </div>
                                 </td>
-                                <td class="px-6 py-4">
+                                <td class="px-4 py-4">
                                     <div class="flex items-center">
                                         <div class="flex-shrink-0 h-10 w-10">
                                             <img class="h-10 w-10 rounded-md object-cover"
@@ -110,11 +116,11 @@
                                         </div>
                                         <div class="ml-4">
                                             <div class="text-sm font-medium text-gray-900">{{ $product->name }}</div>
-                                            <div class="text-sm text-gray-500">{{ Str::limit($product->description, 50) }}</div>
+                                            {{-- <div class="text-sm text-gray-500">{{ Str::limit($product->description, 50) }}</div> --}}
                                         </div>
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
+                                <td class="px-4 py-3 whitespace-nowrap">
                                     <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
                                         {{ $product->category?->name ?? 'Không có danh mục' }}
                                     </span>
@@ -122,7 +128,19 @@
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm font-medium text-gray-900">{{ number_format($product->price) }}đ</div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
+                                @php
+                                    $discounted = $product->getDiscountedPrice();
+                                @endphp
+
+                                <td class="px-2 py-3 text-sm text-gray-700">
+                                    @if($discounted < $product->price)
+                                        <span class="line-through text-gray-400">{{ number_format($product->price) }}₫</span><br>
+                                        <span class="text-red-600 font-semibold">{{ number_format($discounted) }}₫</span>
+                                    @else
+                                        <span class="text-gray-800 font-semibold">{{ number_format($product->price) }}₫</span>
+                                    @endif
+                                </td>
+                                <td class="px-5 py-4 whitespace-nowrap">
                                     @if($product->total_quantity > 10)
                                         <div class="text-sm font-medium text-green-600 flex items-center">
                                             <span class="mr-1">{{ number_format($product->total_quantity) }}</span>
@@ -149,6 +167,29 @@
                                         </span>
                                     @endif
                                 </td>
+                                <td class="px-4 py-2 text-sm text-gray-700">
+                                    @php
+                                        $activePromotion = $product->promotions
+                                            ->where('is_active', true)
+                                            ->filter(function ($promo) {
+                                                $now = now();
+                                                return (!$promo->start_date || $promo->start_date <= $now)
+                                                    && (!$promo->end_date || $promo->end_date >= $now);
+                                            })
+                                            ->first();
+                                    @endphp
+
+                                    @if($activePromotion)
+                                        <span class="inline-block px-2 py-1 text-xs bg-green-100 text-green-700 rounded">
+                                            {{ $activePromotion->code ?? 'Không mã' }}
+                                        </span>
+                                    @else
+                                        <span class="inline-block px-2 py-1 text-xs bg-gray-200 text-gray-600 rounded">
+                                            Không có mã nào được áp dụng
+                                        </span>
+                                    @endif
+                                </td>
+
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                     {{ $product->created_at->format('d/m/Y H:i') }}
                                 </td>
@@ -206,6 +247,36 @@
                     </div>
                 </div>
             </div>
+            <!-- Chọn khuyến mãi -->
+            <div class="flex items-center space-x-2 ml-4 mb-3">
+                <!-- Select khuyến mãi -->
+                <select id="promotionSelector"
+                    class="appearance-none bg-yellow-50 border border-yellow-300 rounded-md pl-3 pr-10 py-2 focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 text-sm">
+                    
+                    <option value="">Chọn khuyến mãi</option>
+
+                    <option value="__remove__" style="background-color:#fee2e2; color:#b91c1c; font-weight:bold;">
+                         Tắt khuyến mãi
+                    </option>
+
+                    @foreach($promotions as $promotion)
+                        <option value="{{ $promotion->id }}">
+                            {{ $promotion->name }} ({{ $promotion->code ?? 'Không mã' }})
+                        </option>
+                    @endforeach
+                </select>
+
+                <!-- Nút áp dụng -->
+                <button id="applyPromotion"
+                    class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-2 rounded-md text-sm">
+                    Áp dụng khuyến mãi
+                </button>
+            </div>
+
+
+
+
+
         </div>
     </div>
 
@@ -305,6 +376,80 @@
                 document.body.appendChild(form);
                 form.submit();
             });
+
+            // apply sale
+            const promotionSelector = document.getElementById('promotionSelector');
+            const applyPromotion = document.getElementById('applyPromotion');
+
+            applyPromotion.addEventListener('click', function () {
+                const selectedProductIds = Array.from(document.querySelectorAll('.product-checkbox'))
+                    .filter(checkbox => checkbox.checked)
+                    .map(checkbox => checkbox.value);
+
+                if (selectedProductIds.length === 0) {
+                    alert('Vui lòng chọn ít nhất một sản phẩm!');
+                    return;
+                }
+
+                if (!promotionSelector.value) {
+                    alert('Vui lòng chọn một khuyến mãi!');
+                    return;
+                }
+
+
+                 // 👇 Nếu chọn "Tắt khuyến mãi"
+                if (promotionSelector.value === '__remove__') {
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '{{ route("admin.products.remove-promotion") }}';
+
+                    const csrfToken = document.createElement('input');
+                    csrfToken.type = 'hidden';
+                    csrfToken.name = '_token';
+                    csrfToken.value = '{{ csrf_token() }}';
+                    form.appendChild(csrfToken);
+
+                    selectedProductIds.forEach(id => {
+                        const productInput = document.createElement('input');
+                        productInput.type = 'hidden';
+                        productInput.name = 'product_ids[]';
+                        productInput.value = id;
+                        form.appendChild(productInput);
+                    });
+
+                    document.body.appendChild(form);
+                    form.submit();
+                    return;
+                }
+                     // Nếu chọn khuyến mãi cụ thể
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '{{ route("admin.products.apply-promotion") }}';
+
+                const csrfToken = document.createElement('input');
+                csrfToken.type = 'hidden';
+                csrfToken.name = '_token';
+                csrfToken.value = '{{ csrf_token() }}';
+                form.appendChild(csrfToken);
+
+                const promotionInput = document.createElement('input');
+                promotionInput.type = 'hidden';
+                promotionInput.name = 'promotion_id';
+                promotionInput.value = promotionSelector.value;
+                form.appendChild(promotionInput);
+
+                selectedProductIds.forEach(id => {
+                    const productInput = document.createElement('input');
+                    productInput.type = 'hidden';
+                    productInput.name = 'product_ids[]';
+                    productInput.value = id;
+                    form.appendChild(productInput);
+                });
+
+                document.body.appendChild(form);
+                form.submit();
+            });
+
         });
     </script>
     @endpush

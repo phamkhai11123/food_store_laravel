@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ProductRequest;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Promotion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -17,7 +18,7 @@ class ProductController extends Controller
      * Hiển thị danh sách sản phẩm
      */
     public function index(Request $request)
-    {
+    {   
         // Sử dụng DB facade để join và tính tổng số lượng đã bán
         $query = Product::withoutGlobalScope('active')
             ->with('category')
@@ -69,11 +70,19 @@ class ProductController extends Controller
             default:
                 $query->orderBy('products.created_at', 'desc');
         }
-
+        
         $products = $query->paginate(6)->withQueryString();
-        $categories = Category::withoutGlobalScope('active')->get();
+        $products->getCollection()->transform(function ($product) {
+            $product->load('promotions'); // 👈 load lại quan hệ promotions
+            return $product;
+        });
 
-        return view('admin.products.index', compact('products', 'categories'));
+        $categories = Category::withoutGlobalScope('active')->get();
+        $promotions = Promotion::where('is_active', true)->get();
+            // dd($products->first()->promotions);
+
+
+        return view('admin.products.index', compact('products', 'categories','promotions'));
     }
 
     /**
@@ -268,5 +277,34 @@ class ProductController extends Controller
         }
 
         return back()->with('success', $message);
+    }
+    public function applyPromotion(Request $request)
+    {
+        $request->validate([
+            'promotion_id' => 'required|exists:promotions,id',
+            'product_ids' => 'required|array',
+            'product_ids.*' => 'exists:products,id',
+        ]);
+
+        $promotion = Promotion::findOrFail($request->promotion_id);
+
+        Product::whereIn('id', $request->product_ids)->each(function ($product) use ($promotion) {
+            $product->promotions()->sync([$promotion->id]);
+        });
+
+        return redirect()->back()->with('success', '🎉 Khuyến mãi đã được áp dụng cho sản phẩm đã chọn!');
+    }
+    public function removePromotion(Request $request)
+    {
+        $request->validate([
+            'product_ids' => 'required|array',
+            'product_ids.*' => 'exists:products,id',
+        ]);
+
+        Product::whereIn('id', $request->product_ids)->each(function ($product) {
+            $product->promotions()->detach(); // 👈 Gỡ toàn bộ khuyến mãi
+        });
+
+        return redirect()->back()->with('success', '❌ Khuyến mãi đã được tắt cho sản phẩm đã chọn!');
     }
 }

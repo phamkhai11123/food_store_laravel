@@ -19,14 +19,14 @@ class OrderController extends Controller
      */
     public function cart()
     {
-        $cartItems = Cart::where('user_id', Auth::id())->with('product')->get();
+        $cartItems = Cart::where('user_id', Auth::id())->with('product.promotions')->get();
 
         if ($cartItems->isEmpty()) {
             return view('shop.cart.index', ['cartItems' => $cartItems, 'subtotal' => 0]);
         }
 
         $subtotal = $cartItems->sum(function ($item) {
-            return $item->quantity * $item->product->price;
+            return $item->quantity * $item->product->getDiscountedPrice();
         });
 
         return view('shop.cart.index', compact('cartItems', 'subtotal'));
@@ -54,7 +54,7 @@ class OrderController extends Controller
         }
 
         $subtotal = $cartItems->sum(function ($item) {
-            return $item->quantity * $item->product->price;
+            return $item->quantity * $item->product->getDiscountedPrice();
         });
 
         // Định nghĩa phí vận chuyển
@@ -78,14 +78,14 @@ class OrderController extends Controller
         $user = Auth::user();
 
         // Lấy giỏ hàng
-        $cartItems = Cart::where('user_id', $user->id)->with('product')->get();
+        $cartItems = Cart::where('user_id', $user->id)->with('product.promotions')->get();
 
         if ($cartItems->isEmpty()) {
             return redirect()->route('cart.index')->with('error', 'Giỏ hàng của bạn đang trống.');
         }
 
         $subtotal = $cartItems->sum(function ($item) {
-            return $item->quantity * $item->product->price;
+            return $item->quantity * $item->product->getDiscountedPrice();
         });
 
         // Định nghĩa phí vận chuyển

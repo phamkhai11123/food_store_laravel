@@ -9,4 +9,12 @@ export default {
     extend: {},
   },
   plugins: [],
+  safelist: [
+  'animate-pulse',
+  'animate-bounce',
+  'bg-gradient-to-r',
+  'from-red-500',
+  'to-yellow-400',
+],
+
 }

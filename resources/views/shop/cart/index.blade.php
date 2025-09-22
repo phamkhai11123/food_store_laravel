@@ -38,7 +38,24 @@
                                                 <p class="text-gray-500">{{ $item->product->category->name }}</p>
                                             </div>
                                             <div class="mt-2 sm:mt-0 text-red-600 font-bold">
-                                                {{ number_format($item->product->price) }}đ
+                                                {{-- {{ number_format($item->product->getDiscountedPrice()) }}đ --}}
+                                                @php
+                                            $discounted = $item->product->getDiscountedPrice();
+                                        @endphp
+                                            @if($discounted < $item->product->price)
+                                                <div class="text-sm text-gray-400 line-through">
+                                                    {{ number_format($item->product->price) }}₫
+                                                </div>
+                                                <div class="text-red-600 font-semibold">
+                                                    {{ number_format($discounted) }}₫ 
+                                                   
+                                                </div>
+                                            @else
+                                                <div class="text-gray-800 font-semibold">
+                                                    {{ number_format($item->product->price) }}₫
+                                                  
+                                                </div>
+                                            @endif
                                             </div>
                                         </div>
 
@@ -69,7 +86,7 @@
                                             </div>
 
                                             <div class="text-gray-700">
-                                                Tổng: <span class="font-bold">{{ number_format($item->product->price * $item->quantity) }}đ</span>
+                                                Tổng: <span class="font-bold">{{ number_format($item->product->getDiscountedPrice() * $item->quantity) }}đ</span>
                                             </div>
 
                                             <form action="{{ route('cart.destroy', $item->id) }}" method="POST">

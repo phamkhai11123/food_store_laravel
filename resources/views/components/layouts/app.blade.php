@@ -45,6 +45,10 @@
 
                 <!-- Navigation -->
                 <nav class="flex items-center space-x-4">
+                    <a href="{{ route('reservation.create') }}" class="text-gray-700 hover:text-blue-600 transition">
+                        <i class="fas fa-table mr-1"></i>
+                        <span class="hidden md:inline">Đặt bàn</span>
+                    </a>
                     <a href="{{ route('products.index') }}" class="text-gray-700 hover:text-blue-600 transition">
                         <i class="fas fa-store mr-1"></i>
                         <span class="hidden md:inline">Món ăn</span>

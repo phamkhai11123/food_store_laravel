@@ -95,8 +95,6 @@
                     @endswitch
                 </td>
                 <td class="px-4 py-2 text-right">{{ number_format($tx->quantity_base, 0) }}</td>
-                {{-- <td class="px-4 py-2 text-right">{{ number_format($tx->ingredients->track_stock ?? 0) }}</td>
-                 --}}
                  @php
                     $unit = $tx->ingredients->base_unit ?? '';
                     $stock = $tx->ingredients->track_stock ?? 0;
@@ -119,6 +117,129 @@
     </tbody>
 </table>
 
-{{ $transactions->links() }}
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+            <!-- Nhập theo tuần -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="font-bold text-lg mb-4">Nhập nguyên liệu theo tuần</h2>
+                <div class="h-64">
+                    <canvas id="importChart"></canvas>
+                </div>
+            </div>
 
+            <!-- Xuất theo tuần -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="font-bold text-lg mb-4">Xuất nguyên liệu theo tuần</h2>
+                <div class="h-64">
+                    <canvas id="exportChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Nhập theo tháng -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="font-bold text-lg mb-4">Nhập nguyên liệu theo tháng</h2>
+                <div class="h-64">
+                    <canvas id="importMonthlyChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Xuất theo tháng -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="font-bold text-lg mb-4">Xuất nguyên liệu theo tháng</h2>
+                <div class="h-64">
+                    <canvas id="exportMonthlyChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Nhập theo năm -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="font-bold text-lg mb-4">Nhập nguyên liệu theo năm</h2>
+                <div class="h-64">
+                    <canvas id="importYearlyChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Xuất theo năm -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="font-bold text-lg mb-4">Xuất nguyên liệu theo năm</h2>
+                <div class="h-64">
+                    <canvas id="exportYearlyChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+{{ $transactions->links() }}
+ @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+        function renderChart(id, labels, datasets) {
+        const ctx = document.getElementById(id).getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: { labels, datasets },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': ' + context.formattedValue ;
+                            }
+                        }
+                    },
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: value => value + ' ml/g/cái'
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    renderChart(
+        'importChart',
+        {!! json_encode($importChart['labels']) !!},
+        {!! json_encode($importChart['datasets']) !!}
+    );
+
+    renderChart(
+        'exportChart',
+        {!! json_encode($exportChart['labels']) !!},
+        {!! json_encode($exportChart['datasets']) !!}
+    );
+    renderChart(
+        'importMonthlyChart', {!! json_encode($monthLabels) !!},
+         {!! json_encode($importMonthlyDatasets) !!}
+    );
+    renderChart('exportMonthlyChart', 
+        {!! json_encode($monthLabels) !!},
+        {!! json_encode($exportMonthlyDatasets) !!}
+    );
+    renderChart('importYearlyChart',
+        {!! json_encode($yearLabels) !!}, 
+        {!! json_encode($importYearlyDatasets) !!}
+    );
+    renderChart('exportYearlyChart', 
+        {!! json_encode($yearLabels) !!}, 
+        {!! json_encode($exportYearlyDatasets) !!}
+    );
+
+
+
+       
+
+
+
+
+
+
+        });
+    </script>
+@endpush
 </x-layouts.admin>

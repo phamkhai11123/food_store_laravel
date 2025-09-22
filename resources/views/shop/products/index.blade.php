@@ -19,6 +19,8 @@
                                 </a>
                             </li>
                         @endforeach
+                        
+
                     </ul>
 
                     <h2 class="text-xl font-bold mt-8 mb-4">Sắp xếp</h2>
@@ -32,7 +34,7 @@
                             <a href="{{ request()->fullUrlWithQuery(['sort' => 'price_asc']) }}" class="block py-2 px-3 rounded-md {{ request('sort') == 'price_asc' ? 'bg-blue-100 text-blue-600' : 'hover:bg-gray-100' }}">
                                 Giá: Thấp đến cao
                             </a>
-                        </li>
+                        </li>   
                         <li>
                             <a href="{{ request()->fullUrlWithQuery(['sort' => 'price_desc']) }}" class="block py-2 px-3 rounded-md {{ request('sort') == 'price_desc' ? 'bg-blue-100 text-blue-600' : 'hover:bg-gray-100' }}">
                                 Giá: Cao đến thấp
@@ -48,6 +50,12 @@
                                 Tên: Z-A
                             </a>
                         </li>
+                        <li>
+                            <a href="{{ route('products.index', ['sale' => 1]) }}"
+                            class="block py-2 px-3 rounded-md {{ request()->has('sale') && request('sale') == 1 && !request()->has('category') && !request()->has('sort') ? 'bg-blue-100 text-blue-600' : 'hover:bg-gray-100' }}">
+                                🔥 Món đang sale
+                            </a>
+                        </li>   
                     </ul>
                 </div>
             </div>

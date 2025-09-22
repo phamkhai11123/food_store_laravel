@@ -80,6 +80,16 @@
                         <i class="fas fa-store mr-2"></i> Quản lý kho
                     </a>
                 </li>
+                <li>
+                    <a href="{{ route('admin.reservations.index') }}" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 {{ request()->routeIs('admin.reservations.*') ? 'bg-blue-600' : '' }}">
+                        <i class="fas fa-table mr-2"></i> Quản lý đặt bàn
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('admin.promotions.index') }}" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 {{ request()->routeIs('admin.promotions.*') ? 'bg-blue-600' : '' }}">
+                        <i class="fas fa-gift mr-2"></i> Quản lý khuyến mãi
+                    </a>
+                </li>
 
                 <li class="border-t border-gray-700 my-2 pt-2">
                     <a href="{{ route('home') }}" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">

@@ -131,10 +131,27 @@
                                         </div>
                                         <div class="ml-4 flex-1">
                                             <h3 class="text-sm font-medium">{{ $item->product->name }}</h3>
-                                            <p class="text-gray-500 text-sm">{{ $item->quantity }} x {{ number_format($item->product->price) }}đ</p>
+                                            <p class="text-gray-500 text-sm">{{ $item->quantity }} x {{ number_format($item->product->getDiscountedPrice()) }}đ</p>
                                         </div>
+                                        @php
+                                            $discounted = $item->product->getDiscountedPrice();
+                                        @endphp
                                         <div class="text-right">
-                                            <p class="font-medium">{{ number_format($item->product->price * $item->quantity) }}đ</p>
+                                            {{-- <p class="font-medium">{{ number_format($item->product->getDiscountedPrice() * $item->quantity) }}đ</p>
+                                             --}}
+                                              @if($discounted < $item->product->price)
+                                        <div class="text-sm text-gray-400 line-through">
+                                            {{ number_format($item->product->price) }}₫
+                                        </div>
+                                        <div class="text-red-600 font-semibold">
+                                            {{ number_format($discounted) }}₫ 
+                                        </div>
+                                    @else
+                                        <div class="text-gray-800 font-semibold">
+                                            {{ number_format($item->product->price) }}₫ 
+                                        </div>
+                                    @endif
+
                                         </div>
                                     </div>
                                 @endforeach

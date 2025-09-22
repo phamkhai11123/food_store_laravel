@@ -87,7 +87,7 @@
     <section class="py-16">
         <div class="container mx-auto px-4">
             <div class="text-center mb-12" data-aos="fade-up">
-                <h2 class="text-3xl font-bold mb-2">Tại sao chọn FoodStore?</h2>
+                <h2 class="text-3xl font-bold mb-2">Tại sao chọn Quán quê</h2>
                 <p class="text-gray-600">Chúng tôi cam kết mang đến trải nghiệm tuyệt vời nhất cho bạn</p>
             </div>
 

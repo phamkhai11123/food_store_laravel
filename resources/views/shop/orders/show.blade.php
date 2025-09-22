@@ -113,14 +113,34 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    {{-- <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         {{ number_format($item->price, 0, ',', '.') }}đ
+                                    </td> --}}
+                                    @php
+                                        $original = $item->product->getDiscountedPrice();
+                                        $final = $item->price;
+                                    @endphp
+
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        @if($final > $original)
+                                            <div class="line-through text-gray-400">
+                                                {{ number_format($final, 0, ',', '.') }}đ
+                                            </div>
+                                            <div class="text-red-600 font-semibold">
+                                                {{ number_format($original, 0, ',', '.') }}đ
+                                            </div>
+                                        @else
+                                            <div class="text-gray-800 font-semibold">
+                                                {{ number_format($final, 0, ',', '.') }}đ
+                                            </div>
+                                        @endif
                                     </td>
+
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         {{ $item->quantity }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
-                                        {{ number_format($item->price * $item->quantity, 0, ',', '.') }}đ
+                                        {{ number_format($item->product->getDiscountedPrice() * $item->quantity, 0, ',', '.') }}đ
                                     </td>
                                     @if($order->status === 'completed')
                                     <td class="px-6 py-4 whitespace-nowrap text-sm">

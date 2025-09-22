@@ -35,9 +35,22 @@
                             <span class="text-gray-600">{{ $product->review_count }} đánh giá</span>
                         </div>
 
-                        <div class="mb-4">
-                            <span class="text-2xl font-bold text-red-600">{{ number_format($product->price) }}đ</span>
-                        </div>
+                         @php
+                            $discounted = $product->getDiscountedPrice();
+                        @endphp
+
+                        @if($discounted < $product->price)
+                            <div class="text-sm text-gray-500 line-through">
+                                {{ number_format($product->price) }}₫
+                            </div>
+                            <div class="text-lg text-red-600 font-bold">
+                                {{ number_format($discounted) }}₫
+                            </div>
+                        @else
+                            <div class="mt-2 text-xl font-bold text-blue-600">
+                                {{ number_format($product->price, 0, ',', '.') }} đ
+                            </div>
+                        @endif
 
                         <p class="text-gray-700 mb-6">{{ $product->description }}</p>
 

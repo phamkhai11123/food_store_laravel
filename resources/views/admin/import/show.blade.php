@@ -28,13 +28,13 @@
                     @php
                         $unit = $detail->ingredient->base_unit;
                         $rawQty = $detail->quantity;
-                        $convertedQty = in_array($unit, ['ml', 'g']) ? $rawQty / 1000 : $rawQty;
+                        $convertedQty = in_array($unit, ['ml', 'g']) ? $rawQty/1000 : $rawQty;
                         $lineTotal = $convertedQty * $detail->unit_price;
                     @endphp
 
                     <tr class="text-sm text-gray-800">
                         <td class="px-4 py-2 border">{{ $detail->ingredient->name }}</td>
-                        <td class="px-4 py-2 border">{{ $convertedQty }}</td>
+                        <td class="px-4 py-2 border">{{ $detail->quantity }}</td>
                         <td class="px-4 py-2 border">{{ number_format($detail->unit_price, 0, ',', '.') }} đ</td>
                         <td class="px-4 py-2 border">{{ number_format($lineTotal, 0, ',', '.') }} đ</td>
                        <td class="px-4 py-2 border">{{ number_format($detail->ingredient->track_stock, 0) }}</td>
