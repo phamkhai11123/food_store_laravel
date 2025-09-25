@@ -161,11 +161,11 @@
                                 <i class="fas fa-chevron-right mr-2 text-sm"></i> Sản phẩm
                             </a>
                         </li>
-                        <li>
+                        {{-- <li>
                             <a href="#" class="hover:text-blue-400 transition">
                                 <i class="fas fa-chevron-right mr-2 text-sm"></i> Về chúng tôi
                             </a>
-                        </li>
+                        </li> --}}
                         <li>
                             <a href="#" class="hover:text-blue-400 transition">
                                 <i class="fas fa-chevron-right mr-2 text-sm"></i> Liên hệ
@@ -178,13 +178,13 @@
                     <h3 class="text-xl font-bold mb-4">Thông tin liên hệ</h3>
                     <ul class="space-y-2">
                         <li>
-                            <i class="fas fa-map-marker-alt mr-2"></i> 123 Đường ABC, Quận XYZ, Hà Nội
+                            <i class="fas fa-map-marker-alt mr-2"></i> 114 Đường Nguyễn Viết Thứ, Quận Ba Đình, Hà Nội
                         </li>
                         <li>
-                            <i class="fas fa-phone-alt mr-2"></i> (+84) 1234 5678
+                            <i class="fas fa-phone-alt mr-2"></i> (+84) 9891 2542
                         </li>
                         <li>
-                            <i class="fas fa-envelope mr-2"></i> info@foodstore.com
+                            <i class="fas fa-envelope mr-2"></i> quanque@gmail.com
                         </li>
                         <li>
                             <i class="fas fa-clock mr-2"></i> 8:00 - 22:00, Thứ 2 - Chủ nhật
@@ -194,7 +194,7 @@
             </div>
 
             <div class="border-t border-gray-700 mt-8 pt-6 text-center">
-                <p>&copy; {{ date('Y') }} FoodStore. Tất cả các quyền được bảo lưu.</p>
+                <p>&copy; {{ date('Y') }} Quán Quê. Tất cả các quyền được bảo lưu.</p>
             </div>
         </div>
     </footer>

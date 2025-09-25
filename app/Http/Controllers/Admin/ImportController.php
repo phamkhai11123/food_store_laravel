@@ -147,6 +147,17 @@ class ImportController extends Controller
     public function create()
     {
         $ingredients = Ingredients::all();
+        $lowStockIngredients = Ingredients::where(function ($query) {
+            $query->where(function ($q) {
+                $q->whereIn('base_unit', ['ml', 'g'])
+                ->where('track_stock', '<', 2000);
+            })->orWhere(function ($q) {
+                $q->where('base_unit', 'pc')
+                ->where('track_stock', '<', 10);
+            });
+        })->get();
+
+
         $suppliers = [
             'Công ty TNHH Thực phẩm An Khang',
             'Công ty Cổ phần Nguyên liệu Việt',
@@ -155,7 +166,7 @@ class ImportController extends Controller
             'Công ty TNHH Sản xuất & Phân phối Nam Sơn',
         ];
 
-        return view('admin.import.create',compact('ingredients','suppliers'));
+        return view('admin.import.create',compact('ingredients','suppliers','lowStockIngredients'));
     }
 
     /**

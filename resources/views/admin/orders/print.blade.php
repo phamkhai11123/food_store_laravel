@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đơn hàng #{{ $order->order_number }} - FoodStore</title>
+    <title>Đơn hàng #{{ $order->order_number }} - Quán quê</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -142,9 +142,9 @@
                 <div class="flex justify-between">
                     <div>
                         <h4 class="font-bold mb-2">Thông tin liên hệ:</h4>
-                        <p class="text-sm">Email: info@foodstore.com</p>
-                        <p class="text-sm">Điện thoại: (+84) 1234 5678</p>
-                        <p class="text-sm">Địa chỉ: 123 Đường ABC, Quận XYZ, Hà Nội</p>
+                        <p class="text-sm">Email: quanque@gmail.com</p>
+                        <p class="text-sm">Điện thoại: (+84) 2891 7254 </p>
+                        <p class="text-sm">Địa chỉ: 114 Đường Nguyễn Viết Thứ, Quận Ba Đình, Hà Nội</p>
                     </div>
 
                     <div class="text-right">
