@@ -278,7 +278,8 @@ class ProductController extends Controller
 
         return back()->with('success', $message);
     }
-    public function applyPromotion(Request $request)
+    
+   public function applyPromotion(Request $request)
     {
         $request->validate([
             'promotion_id' => 'required|exists:promotions,id',
@@ -288,12 +289,24 @@ class ProductController extends Controller
 
         $promotion = Promotion::findOrFail($request->promotion_id);
 
+        // Kiểm tra khuyến mãi có hợp lệ không
+        $now = now();
+        $isExpired = !$promotion->is_active ||
+            ($promotion->start_date && $promotion->start_date > $now) ||
+            ($promotion->end_date && $promotion->end_date < $now);
+
+        if ($isExpired) {
+            return redirect()->back()->with('error', '⚠️ Khuyến mãi đã hết hạn hoặc chưa bắt đầu!');
+        }
+
+        // Áp dụng khuyến mãi cho sản phẩm
         Product::whereIn('id', $request->product_ids)->each(function ($product) use ($promotion) {
             $product->promotions()->sync([$promotion->id]);
         });
 
         return redirect()->back()->with('success', '🎉 Khuyến mãi đã được áp dụng cho sản phẩm đã chọn!');
     }
+    
     public function removePromotion(Request $request)
     {
         $request->validate([

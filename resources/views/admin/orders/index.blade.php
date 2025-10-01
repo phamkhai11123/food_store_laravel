@@ -153,7 +153,7 @@
                         <tr>
                             <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 <div class="flex items-center">
-                                    <input type="checkbox" id="selectAll" class="h-2 w-2 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                    <input type="checkbox" id="selectAll" class="h-3 w-3 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
                                 </div>
                             </th>
                             <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -191,9 +191,9 @@
                     <tbody class="bg-white divide-y divide-gray-200">
                         @foreach($orders as $order)
                             <tr>
-                                <td class="px-3 py-3 whitespace-nowrap">
+                                <td class="px-4 py-3 whitespace-nowrap">
                                     <div class="flex items-center">
-                                        <input type="checkbox" class="order-checkbox h-2 w-2 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" value="{{ $order->id }}">
+                                        <input type="checkbox" class="order-checkbox h-3 w-3 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" value="{{ $order->id }}">
                                     </div>
                                 </td>
                                 <td class="px-3 py-3 whitespace-nowrap">

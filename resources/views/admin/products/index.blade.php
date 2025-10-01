@@ -131,6 +131,7 @@
                                 @php
                                     $discounted = $product->getDiscountedPrice();
                                 @endphp
+                                {{-- --}}
 
                                 <td class="px-2 py-3 text-sm text-gray-700">
                                     @if($discounted < $product->price)
