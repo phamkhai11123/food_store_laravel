@@ -182,7 +182,7 @@
                     </div>
                 </div>
 
-                @if($order->status === 'pending')
+                @if($order->status === 'pending' && $order->payment_status != 1)
                     <div class="mt-8 text-right">
                         <form action="{{ route('shop.orders.cancel', $order) }}" method="POST" class="inline-block">
                             @csrf
@@ -192,6 +192,15 @@
                             </button>
                         </form>
                     </div>
+                @endif
+                @if($order->payment_method === 'bank' && $order->payment_status != 1)
+                        <form action="{{ url('/vnpay_payment') }}" method="post">
+                            @csrf
+                            <input type="hidden" name="total" value="{{$order->total+30000 }}">
+                            <input type="hidden" name="order_number" value="{{$order->order_number }}">
+                            <button type="submit" class="btn btn-success check_out"
+                                name="redirect">Thanh toán VNPAY</button>
+                        </form>
                 @endif
             </div>
         </div>

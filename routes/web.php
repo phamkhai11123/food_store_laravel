@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\RecipeItemController as AdminRecipeItemController
 use App\Http\Controllers\Admin\MenuItemController as AdminMenuItemController;
 use App\Http\Controllers\Admin\AdminReservationController;
 use App\Http\Controllers\Admin\PromotionController as AdminPromotionController;
+use App\Http\Controllers\Shop\VNPayController;
 
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ImportController as AdminImportController;
@@ -35,6 +36,8 @@ Route::get('/products/{id}', [ProductController::class, 'show'])->name('products
 Route::get('/booking/create', [ReservationController::class, 'create'])->name('reservation.create');
 Route::post('/booking', [ReservationController::class, 'store'])->name('reservation.store');
 
+Route::post('/vnpay_payment', [VNPayController::class, 'createPayment'])->name('vnpay.payment');
+Route::get('/vnpay-return', [VNPayController::class, 'vnpayReturn'])->name('vnpay.return');
 // Authentication
 Route::middleware('guest')->group(function () {
     Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');

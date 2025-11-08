@@ -23,6 +23,8 @@
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ngày đặt</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tổng tiền</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái đơn hàng</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái thanh toán</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phương thức thanh toán</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thao tác</th>
                             </tr>
                         </thead>
@@ -57,11 +59,25 @@
                                         </span>
                                     @endif
                                     </td>
+                                   <td class="px-6 py-4 whitespace-nowrap">
+                                        @if($order->payment_status == 1)
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Đã thanh toán</span>
+                                        @else
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Chưa thanh toán</span>
+                                        @endif
+                                   </td>
+                                   <td class="px-6 py-4 whitespace-nowrap text-center">
+                                    @if($order->payment_method === "bank")
+                                            <span class="text-sm text-gray-900">Bank</span>
+                                        @else
+                                            <span class="text-sm text-gray-900">COD</span>
+                                        @endif
+                                   </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                         <a href="{{ route('shop.orders.show', $order) }}" class="text-blue-600 hover:text-blue-900">
                                             Chi tiết
                                         </a>
-                                        @if($order->status === 'pending')
+                                        {{-- @if($order->status === 'pending' && $order->payment_status === '0' && $order->payment_method === 'cod')
                                             <form action="{{ route('shop.orders.cancel', $order) }}" method="POST" class="inline-block ml-3">
                                                 @csrf
                                                 @method('PUT')
@@ -69,7 +85,7 @@
                                                     Hủy đơn
                                                 </button>
                                             </form>
-                                        @endif
+                                        @endif --}}
                                         @if($order->status === 'processing')
                                             <form action="{{ route('shop.orders.complete', $order) }}" method="POST" class="inline-block ml-3">
                                                 @csrf

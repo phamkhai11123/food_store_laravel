@@ -129,9 +129,6 @@ class OrderController extends Controller
             Cart::where('user_id', $user->id)->delete();
 
             DB::commit();
-
-            // Gửi email xác nhận đơn hàng (có thể thêm sau)
-
             return redirect()->route('shop.orders.show', $order->id)->with('success', 'Đặt hàng thành công!');
         } catch (\Exception $e) {
             DB::rollBack();

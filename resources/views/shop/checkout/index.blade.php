@@ -101,7 +101,7 @@
                                 </label>
                             </div>
 
-                            <div class="flex items-center p-4 border border-gray-200 rounded-md">
+                            {{-- <div class="flex items-center p-4 border border-gray-200 rounded-md">
                                 <input type="radio" id="payment_momo" name="payment_method" value="momo" class="h-4 w-4 text-blue-600">
                                 <label for="payment_momo" class="ml-3 flex items-center">
                                     <i class="fas fa-wallet text-pink-600 mr-2"></i>
@@ -110,7 +110,7 @@
                                         <p class="text-gray-500 text-sm">Thanh toán qua ví điện tử MoMo</p>
                                     </div>
                                 </label>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                 </div>
@@ -178,6 +178,7 @@
                                 <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white text-center px-4 py-3 rounded-md font-bold">
                                     Đặt hàng
                                 </button>
+                               
 
                                 <p class="text-sm text-gray-500 mt-4 text-center">
                                     Bằng cách đặt hàng, bạn đồng ý với
